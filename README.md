@@ -58,14 +58,16 @@ pytest tests/ -v
 
 ## Docker Images
 
-Two separate images are built and pushed to GitHub Container Registry (ghcr.io):
+Two separate images are built and pushed to Docker Hub:
 
-| Image | Registry |
-|-------|----------|
-| Database (Postgres + schema) | `ghcr.io/suhassrivats/interfaceai-exercise-db` |
-| Application (FastAPI) | `ghcr.io/suhassrivats/interfaceai-exercise-app` |
+| Image | Docker Hub |
+|-------|------------|
+| Database (Postgres + schema) | `DOCKERHUB_USERNAME/interfaceai-exercise-db` |
+| Application (FastAPI) | `DOCKERHUB_USERNAME/interfaceai-exercise-app` |
 
-Use `docker compose up --build` to build locally, or `docker compose up` to pull from the registry (after CI has pushed).
+Use `docker compose up --build` to build locally. To pull from Docker Hub, set `DOCKERHUB_USERNAME` in a `.env` file (e.g. `DOCKERHUB_USERNAME=yourusername`) or export it, then run `docker compose up`.
+
+**Required GitHub secrets** (Settings → Secrets and variables → Actions): `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` (create at [hub.docker.com/settings/security](https://hub.docker.com/settings/security)).
 
 ## CI/CD
 
@@ -73,7 +75,7 @@ On push/PR to `main` or `master`, GitHub Actions:
 
 1. **lint-and-test:** Ruff lint on Python 3.11 and 3.12  
 2. **test-postgres:** Pytest against a Postgres service  
-3. **build-database-image:** Build and push the database image to ghcr.io  
-4. **build-app-image:** Build and push the application image to ghcr.io  
+3. **build-database-image:** Build and push the database image to Docker Hub  
+4. **build-app-image:** Build and push the application image to Docker Hub  
 
 Images are pushed only on push to `main`/`master` (not on pull requests).
